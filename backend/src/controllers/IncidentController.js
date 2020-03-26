@@ -4,7 +4,7 @@ class IncidentController{
   async index(req, res) {
     const { page = 1 } = req.query;
 
-    const [count] = await connection('incidents')
+    const [count] = await connection('incidents').count()
 
     const incidents = await connection('incidents')
     .join('ongs', 'ongs.id', '=', 'incidents.ong_id')
@@ -18,6 +18,9 @@ class IncidentController{
       'ongs.city', 
       'ongs.uf'
     ]);
+
+    res.header('X-Total-Count', count['count(*)'])
+
 
     return res.json(incidents)
   }
